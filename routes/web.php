@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\LotteryController;
+use App\Http\Controllers\LotteryGiftController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,3 +18,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::resources([
+    'lotteries'     =>  LotteryController::class,
+    'lottery_gifts' =>  LotteryGiftController::class,
+]);
