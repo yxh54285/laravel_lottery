@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Models\Lottery;
 use App\Models\LotteryGifts;
 
@@ -40,36 +41,48 @@ class LotteryController extends Controller
         //
         $lotteries = array();
 
-        $lottery_gifts = LotteryGifts::select('id', 'name', 'quantity')->orderByRaw('id DESC')->get();
+        // 取得抽獎人數
+        $number = $request->get('number');
+        // 取得 lottery_gifts table 內，尚未抽出獎項
+        $lottery_gifts = LotteryGifts::where('used', 0)->select('id', 'name', 'quantity')->get();
 
         foreach ($lottery_gifts as $lottery_gift) {
             for($i=0; $i<$lottery_gift['quantity']; $i++) {
-                $gifts[] = $lottery_gift['id'];
+                // 將 gift id 、 gift name 存為陣列 
+                $gifts_id[] = $lottery_gift['id'];
+                $gifts_name[] = $lottery_gift['name'];
             }
         }
 
-        for ($i=1; $i <= 30 ; $i++) { 
-            if ($i < 10) {
-                $number[] = '00'.$i;
-            }
-            else {
-                $number[] = '0'.$i;
-            }
+        // 利用 sprintf 格式化編號
+        // https://www.php.net/manual/en/function.sprintf.php
+        for ($i = 1; $i <= $number ; $i++) { 
+            $numbers[] = sprintf('%03d',$i);
         }
 
-        // shuffle($gifts);
-        shuffle($number);
+        // https://www.w3schools.com/php/func_array_shuffle.asp
+        // 利用 shuffle 隨機排序
+        shuffle($numbers);
+        // 依照 gift 數量取出相對應人數
+        $numbers = array_slice($numbers, 0, count($gifts_id));
 
-        foreach ($gifts as $key => $gift) {
-            $lotteries[] = array(
-                'number'    => $number[$key],
-                'gift_id'   => $gift
+        foreach ($gifts_id as $key => $gift_id) {
+            $lotteries = array(
+                'number'    => $numbers[$key],
+                'gift_id'   => $gift_id
+            );
+            // insert 抽獎結果
+            Lottery::create($lotteries);
+            // 更新已抽出獎項的 used 欄位
+            LotteryGifts::where('id', $gift_id)->update(['used' => 1]);
+
+            $result[] = array(
+                'number'        => $numbers[$key],
+                'gift_name'     => $gifts_name[$key],
             );
         }
-
-        Lottery::insert($lotteries);
-
-        return $lotteries;
+        
+        return response()->json(['success' => 1, 'data' => $result], 200);
     }
 
     /**

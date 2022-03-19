@@ -47,29 +47,33 @@ class LotteryGiftController extends Controller
     public function store(Request $request)
     {
         //
-        // 預設資料
-        // 資料範例：
-        // 0 = ['name' => '頭獎','quantity' => 1]
-        // 1 = ['name' => '二獎','quantity' => 2]
-        // 2 = ['name' => '三獎','quantity' => 3]
-        $lottery_gifts = [
-            ['name' => '頭獎', 'quantity' => 1],
-            ['name' => '二獎', 'quantity' => 2],
-            ['name' => '三獎', 'quantity' => 5]
-        ];
 
-        LotteryGifts::insert($lottery_gifts);
+        // 取得獎品資料
+        $datas = $request->get('gift');
 
-        return response(true);
-        // Validator應用
-        // $validator = Validator::make($request->all(), [
-        //     'name'      =>  'required',
-        //     'quantity'  => 'required'
-        // ]);
-
-        // if($validator->fails()) {
-        //     return response($validator->errors(), 400);
-        // }
+        // 取代因 textarea 產生的 \n\r (換行符號)
+        $quantitys = str_replace(array("\n", "\r"), '.', $datas);
+        // 將獎項explode為陣列形式
+        // 0 => ['頭獎', 1]
+        // 1 => ['二獎', 2]
+        // 2 => ['三獎', 5]
+        $quantitys = explode('.', $quantitys);
+        // 
+        foreach ($quantitys as $key => $quantity) {
+            // 取得獎項名稱與數量
+            // ['頭獎', 1] => [[頭獎], 1]
+            // ['二獎', 2] => [[二獎], 2]
+            // ['三獎', 5] => [[三獎], 5]
+            $items = explode(',', $quantity);
+            $names = array(
+                'name'      => $items[0],
+                'used'      => 0,
+                'quantity'  => $items[1]
+            );
+            LotteryGifts::create($names);
+        }
+        
+        return response()->json(['success' => 1], 200);
     }
 
     /**
