@@ -50,6 +50,10 @@ class LotteryGiftController extends Controller
 
         // 取得獎品資料
         $datas = $request->get('gift');
+        // 取得抽獎人數
+        $number = $request->get('number');
+
+        $item_num = 0;
 
         // 取代因 textarea 產生的 \n\r (換行符號)
         $quantitys = str_replace(array("\n", "\r"), '.', $datas);
@@ -65,12 +69,21 @@ class LotteryGiftController extends Controller
             // ['二獎', 2] => [[二獎], 2]
             // ['三獎', 5] => [[三獎], 5]
             $items = explode(',', $quantity);
-            $names = array(
-                'name'      => $items[0],
-                'used'      => 0,
-                'quantity'  => $items[1]
-            );
-            LotteryGifts::create($names);
+            $item_num += $items[1];
+            if ($item_num > $number) {
+                // 若抽獎數量 > 抽獎人數，return error
+                return response()->json(['success' => 0], 400);
+            } else {
+                $names[] = array(
+                    'name'      => $items[0],
+                    'used'      => 0,
+                    'quantity'  => $items[1]
+                );
+            }
+        }
+
+        foreach ($names as $name) {
+            LotteryGifts::create($name);
         }
         
         return response()->json(['success' => 1], 200);

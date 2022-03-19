@@ -33,7 +33,8 @@
                 type: "POST",
                 url: "/lottery_gifts",
                 data: {
-                    'gift'  :$('#staticGift').val()
+                    'gift'  :$('#staticGift').val(),
+                    'number'  :$('#staticPeople').val()
                 },
                 cache: false,
                 dataType: 'json',
@@ -45,6 +46,7 @@
                     console.log(xhr);
                     console.log(status);
                     console.log(msg);
+                    alert('獎品總數不可以超過抽獎人數唷');
                 }
             });
         }
