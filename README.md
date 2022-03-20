@@ -39,6 +39,51 @@
 
 ## API
 
+### GET
+#### /lotteries
+**response：**
+`200`
+```js
+[
+    {
+        "number": "020",
+        "gift_name": "三獎"
+    },
+    {
+        "number": "017",
+        "gift_name": "三獎"
+    },
+    {
+        "number": "007",
+        "gift_name": "三獎"
+    },
+    {
+        "number": "009",
+        "gift_name": "三獎"
+    },
+    {
+        "number": "003",
+        "gift_name": "三獎"
+    },
+    {
+        "number": "014",
+        "gift_name": "二獎"
+    },
+    {
+        "number": "006",
+        "gift_name": "二獎"
+    },
+    {
+        "number": "018",
+        "gift_name": "二獎"
+    },
+    {
+        "number": "002",
+        "gift_name": "頭獎"
+    }
+]
+```
+
 ### POST
 #### 1. /lotteries
 **request：**
