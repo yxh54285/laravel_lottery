@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LotteryController;
 use App\Http\Controllers\LotteryGiftController;
+use App\Http\Middleware\CheckMaxPeople;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,7 +20,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::post('lottery_gifts', [LotteryGiftController::class, 'store'])
+    ->middleware([CheckMaxPeople::class]);
+
 Route::resources([
     'lotteries'     =>  LotteryController::class,
-    'lottery_gifts' =>  LotteryGiftController::class,
+    // 'lottery_gifts' =>  LotteryGiftController::class,
 ]);

@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Lottery;
 use App\Models\LotteryGifts;
+use App\Http\Requests\StorePostRequest;
+
 
 class LotteryController extends Controller
 {
@@ -17,7 +19,7 @@ class LotteryController extends Controller
     public function index()
     {
         //
-        
+
     }
 
     /**
@@ -36,7 +38,7 @@ class LotteryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StorePostRequest $request)
     {
         //
         $lotteries = array();
@@ -47,7 +49,7 @@ class LotteryController extends Controller
         $lottery_gifts = LotteryGifts::where('used', 0)->select('id', 'name', 'quantity')->get();
 
         foreach ($lottery_gifts as $lottery_gift) {
-            for($i=0; $i<$lottery_gift['quantity']; $i++) {
+            for ($i = 0; $i < $lottery_gift['quantity']; $i++) {
                 // 將 gift id 、 gift name 存為陣列 
                 $gifts_id[] = $lottery_gift['id'];
                 $gifts_name[] = $lottery_gift['name'];
@@ -56,8 +58,8 @@ class LotteryController extends Controller
 
         // 利用 sprintf 格式化編號
         // https://www.php.net/manual/en/function.sprintf.php
-        for ($i = 1; $i <= $number ; $i++) { 
-            $numbers[] = sprintf('%03d',$i);
+        for ($i = 1; $i <= $number; $i++) {
+            $numbers[] = sprintf('%03d', $i);
         }
 
         // https://www.w3schools.com/php/func_array_shuffle.asp
@@ -81,7 +83,7 @@ class LotteryController extends Controller
                 'gift_name'     => $gifts_name[$key],
             );
         }
-        
+
         return response()->json(['success' => 1, 'data' => $result], 200);
     }
 
