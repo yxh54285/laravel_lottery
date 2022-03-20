@@ -13,7 +13,7 @@ class StorePostRequest extends FormRequest
    */
   public function authorize()
   {
-    return false;
+    return true;
   }
 
   /**
@@ -25,7 +25,7 @@ class StorePostRequest extends FormRequest
   {
     return [
       'gift'   => 'string',
-      'number' => 'integer'
+      'number' => 'required|integer'
     ];
   }
 }

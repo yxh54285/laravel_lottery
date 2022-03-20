@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Lottery;
 use App\Models\LotteryGifts;
-use App\Http\Requests\StorePostRequest;
 
 
 class LotteryController extends Controller
@@ -38,7 +37,7 @@ class LotteryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StorePostRequest $request)
+    public function store(Request $request)
     {
         //
         $lotteries = array();
