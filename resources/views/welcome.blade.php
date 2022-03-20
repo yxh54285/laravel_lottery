@@ -61,6 +61,7 @@
                 cache: false,
                 dataType: 'json',
                 success: function(result) {
+                    // console.log(result);
                     var datas = result.data;
                     var html = '';
                     for(var i = 0; i < datas.length; i++) {
@@ -81,6 +82,30 @@
             $('#staticPeople').val(30);
             $('#staticGift').val('');
             $('#table').html('');
+        }
+
+        function search() {
+            $.ajax({
+                type: "GET",
+                url: "/lotteries",
+                data: {},
+                cache: false,
+                dataType: 'json',
+                success: function(result) {
+                    // console.log(result);
+                    var datas = result;
+                    var html = '';
+                    for(var i = 0; i < datas.length; i++) {
+                        html += '<tr><td scope="row">'+datas[i].gift_name+'</td><td scope="row">'+datas[i].number+'</td></tr>';
+                    }
+                    $('#table').html(html);
+                },
+                error: function(xhr, status, msg) {
+                    console.log(xhr);
+                    console.log(status);
+                    console.log(msg);
+                }
+            });
         }
     </script>
     <body>
@@ -113,6 +138,7 @@
             </form>
             <div class="mt-5">
                 <button type="button" class="btn btn-lg btn-outline-danger px-5 mx-3" onclick="reset()">重置</button>
+                <button type="button" class="btn btn-lg btn-info px-5 mx-3" onclick="search()">查詢中獎紀錄</button>
                 <button type="button" class="btn btn-lg btn-primary px-5 mx-3" onclick="submit()">抽獎</button>
             </div>
             <hr class="my-5">

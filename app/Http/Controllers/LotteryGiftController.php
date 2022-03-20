@@ -42,20 +42,12 @@ class LotteryGiftController extends Controller
 
         // 取得獎品資料
         $datas = $request->get('gift');
-
         // 取代因 textarea 產生的 \n\r (換行符號)
         $quantitys = str_replace(array("\n", "\r"), '.', $datas);
         // 將獎項explode為陣列形式
-        // 0 => ['頭獎', 1]
-        // 1 => ['二獎', 2]
-        // 2 => ['三獎', 5]
         $quantitys = explode('.', $quantitys);
-        // 
         foreach ($quantitys as $key => $quantity) {
             // 取得獎項名稱與數量
-            // ['頭獎', 1] => [[頭獎], 1]
-            // ['二獎', 2] => [[二獎], 2]
-            // ['三獎', 5] => [[三獎], 5]
             $items = explode(',', $quantity);
 
             $names[] = array(

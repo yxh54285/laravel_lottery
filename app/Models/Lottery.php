@@ -10,9 +10,10 @@ class Lottery extends Model
     use HasFactory;
 
     protected $fillable = [
-        'id',  
-        'number', 
-        'gift_id', 
-        'created_at' 
+        'id',
+        'group_id',
+        'number',
+        'gift_id',
+        'created_at'
     ];
 }

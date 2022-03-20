@@ -18,7 +18,16 @@ class LotteryController extends Controller
     public function index()
     {
         //
-
+        $id = Lottery::latest()->select('group_id')->first();
+        $datas = Lottery::where('group_id', $id['group_id'])->select('id', 'number', 'gift_id')->get();
+        foreach ($datas as $data) {
+            $gift_name = LotteryGifts::where('id', $data['gift_id'])->select('name')->get();
+            $array[] = array(
+                'number'    => $data['number'],
+                'gift_name' => $gift_name[0]['name'],
+            );
+        }
+        return response()->json($array);
     }
 
     /**
@@ -46,10 +55,12 @@ class LotteryController extends Controller
         $number = $request->get('number');
         // 取得 lottery_gifts table 內，尚未抽出獎項
         $lottery_gifts = LotteryGifts::where('used', 0)->select('id', 'name', 'quantity')->get();
-
+        // 目前資料表內last id
+        $group_id = Lottery::latest()->select('id')->first();
+        $last_group_id = (isset($group_id['id'])) ? ((int)$group_id['id'] + 1) : 1;
         foreach ($lottery_gifts as $lottery_gift) {
             for ($i = 0; $i < $lottery_gift['quantity']; $i++) {
-                // 將 gift id 、 gift name 存為陣列 
+                // 將 gift id 、 gift name 存為陣列
                 $gifts_id[] = $lottery_gift['id'];
                 $gifts_name[] = $lottery_gift['name'];
             }
@@ -69,6 +80,7 @@ class LotteryController extends Controller
 
         foreach ($gifts_id as $key => $gift_id) {
             $lotteries = array(
+                'group_id'  => $last_group_id,
                 'number'    => $numbers[$key],
                 'gift_id'   => $gift_id
             );
@@ -78,6 +90,7 @@ class LotteryController extends Controller
             LotteryGifts::where('id', $gift_id)->update(['used' => 1]);
 
             $result[] = array(
+                'id'            => $last_group_id,
                 'number'        => $numbers[$key],
                 'gift_name'     => $gifts_name[$key],
             );
