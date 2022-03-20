@@ -71,7 +71,7 @@ class LotteryGiftController extends Controller
             $items = explode(',', $quantity);
             $item_num += $items[1];
             if ($item_num > $number) {
-                // 若抽獎數量 > 抽獎人數，return error
+                // 若獎品數量 > 抽獎人數，return error
                 return response()->json(['success' => 0], 400);
             } else {
                 $names[] = array(
