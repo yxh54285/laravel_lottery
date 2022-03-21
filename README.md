@@ -162,3 +162,11 @@
     ]
 }
 ```
+
+### DELETE
+#### /lotteries/{lotteries}
+**response：**
+`200`
+```js
+true
+```
