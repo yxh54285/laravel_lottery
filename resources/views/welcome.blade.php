@@ -64,6 +64,8 @@
                     // console.log(result);
                     var datas = result.data;
                     var html = '';
+                    // console.log(datas[0].id);
+                    $('#group_id').val(datas[0].id);
                     for(var i = 0; i < datas.length; i++) {
                         html += '<tr><td scope="row">'+datas[i].gift_name+'</td><td scope="row">'+datas[i].number+'</td></tr>';
                     }
@@ -78,10 +80,28 @@
         }
 
         function reset() {
-            // console.log($('#staticGift').val());
+            // console.log($('#group_id').val);
             $('#staticPeople').val(30);
             $('#staticGift').val('');
-            $('#table').html('');
+            var group_id = $('#group_id').val();
+            if (group_id) {
+                $.ajax({
+                    type: "DELETE",
+                    url: "/lotteries/" + group_id,
+                    data: {},
+                    cache: false,
+                    dataType: 'json',
+                    success: function(result) {
+                        search();
+                        // console.log(result);
+                    },
+                    error: function(xhr, status, msg) {
+                        console.log(xhr);
+                        console.log(status);
+                        console.log(msg);
+                    }
+                });
+            }
         }
 
         function search() {
@@ -135,6 +155,7 @@
 頭獎,1"></textarea>
                     </div>
                 </div>
+                <span class="d-none" id="group_id" value=""></span>
             </form>
             <div class="mt-5">
                 <button type="button" class="btn btn-lg btn-outline-danger px-5 mx-3" onclick="reset()">重置</button>

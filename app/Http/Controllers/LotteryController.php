@@ -56,8 +56,8 @@ class LotteryController extends Controller
         // 取得 lottery_gifts table 內，尚未抽出獎項
         $lottery_gifts = LotteryGifts::where('used', 0)->select('id', 'name', 'quantity')->get();
         // 目前資料表內last id
-        $group_id = Lottery::latest()->select('id')->first();
-        $last_group_id = (isset($group_id['id'])) ? ((int)$group_id['id'] + 1) : 1;
+        $group_id = Lottery::orderByRaw('id DESC')->select('id')->limit(1)->get();
+        $last_group_id = (isset($group_id[0]['id'])) ? ((int)$group_id[0]['id'] + 1) : 1;
         foreach ($lottery_gifts as $lottery_gift) {
             for ($i = 0; $i < $lottery_gift['quantity']; $i++) {
                 // 將 gift id 、 gift name 存為陣列
@@ -142,5 +142,10 @@ class LotteryController extends Controller
     public function destroy($id)
     {
         //
+        // 找出目前的Group_id
+        $group_id = Lottery::where('id', $id)->select('group_id')->get()->first();
+        // 需被軟刪除的中獎名單
+        Lottery::where('group_id', '!=', $group_id['group_id'])->delete();
+        return response()->json(true);
     }
 }
